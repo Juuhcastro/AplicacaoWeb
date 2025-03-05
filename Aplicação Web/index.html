@@ -1,0 +1,205 @@
+<!-- Página de Cadastro de Usuários - Interface Melhorada -->
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cadastro de Usuário</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background: linear-gradient(135deg, #4caf50, #2e7d32);
+        margin: 0;
+      }
+      .container {
+        background: white;
+        padding: 40px;
+        border-radius: 12px;
+        box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.3);
+        width: 700px;
+        text-align: center;
+      }
+      h2 {
+        color: #333;
+        font-size: 28px;
+        margin-bottom: 25px;
+      }
+      label {
+        display: block;
+        margin-top: 14px;
+        text-align: left;
+        font-weight: bold;
+        font-size: 18px;
+      }
+      input,
+      select {
+        width: 100%;
+        padding: 14px;
+        margin-top: 6px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        font-size: 20px;
+      }
+      .button-container {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 25px;
+      }
+      button {
+        width: 48%;
+        padding: 16px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 20px;
+        font-weight: bold;
+      }
+      .save-button {
+        background-color: #28a745;
+        color: white;
+      }
+      .save-button:hover {
+        background-color: #218838;
+      }
+      .clear-button {
+        background-color: #dc3545;
+        color: white;
+      }
+      .clear-button:hover {
+        background-color: #c82333;
+      }
+      .link-container {
+        margin-top: 25px;
+      }
+      .link-container a {
+        text-decoration: none;
+        font-weight: bold;
+        color: #2e7d32;
+        font-size: 20px;
+      }
+      .link-container a:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>Cadastro de Usuário</h2>
+      <form id="userForm">
+        <label for="name">Nome:</label>
+        <input
+          type="text"
+          id="name"
+          required
+          minlength="10"
+          placeholder="Mínimo 10 caracteres"
+        />
+
+        <label for="email">E-mail:</label>
+        <input
+          type="email"
+          id="email"
+          required
+          placeholder="exemplo@dominio.com"
+        />
+
+        <label for="phone">Telefone:</label>
+        <input
+          type="text"
+          id="phone"
+          required
+          placeholder="(XX) XXXXX-XXXX"
+          maxlength="15"
+          oninput="formatPhone(this)"
+        />
+
+        <label for="age">Idade:</label>
+        <select id="age" required>
+          <option value="" disabled selected>Selecione a idade</option>
+        </select>
+
+        <div class="button-container">
+          <button type="button" class="save-button" onclick="saveData()">
+            Salvar
+          </button>
+          <button type="button" class="clear-button" onclick="clearForm()">
+            Limpar
+          </button>
+        </div>
+      </form>
+      <div class="link-container">
+        <a href="usuarios.html">Ver Cadastros</a>
+      </div>
+    </div>
+
+    <script>
+      function formatPhone(input) {
+        let phone = input.value.replace(/\D/g, "");
+        if (phone.length > 2) {
+          phone = `(${phone.substring(0, 2)}) ${phone.substring(2)}`;
+        }
+        if (phone.length > 10) {
+          phone = `${phone.substring(0, 10)}-${phone.substring(10, 14)}`;
+        }
+        input.value = phone;
+      }
+
+      function populateAgeOptions() {
+        let ageSelect = document.getElementById("age");
+        for (let i = 1; i <= 100; i++) {
+          let option = document.createElement("option");
+          option.value = i;
+          option.textContent = i;
+          ageSelect.appendChild(option);
+        }
+      }
+
+      function validateEmail(email) {
+        let emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+      }
+
+      function saveData() {
+        let name = document.getElementById("name").value;
+        let email = document.getElementById("email").value;
+        let phone = document.getElementById("phone").value;
+        let age = document.getElementById("age").value;
+
+        if (!name || name.length < 10) {
+          alert("O nome deve ter pelo menos 10 caracteres.");
+          return;
+        }
+        if (!email || !validateEmail(email)) {
+          alert("Por favor, insira um e-mail válido.");
+          return;
+        }
+        if (!phone || phone.length < 14) {
+          alert(
+            "Por favor, insira um telefone válido no formato (XX) XXXXX-XXXX."
+          );
+          return;
+        }
+        if (!age) {
+          alert("Por favor, selecione a idade.");
+          return;
+        }
+
+        let users = JSON.parse(localStorage.getItem("users")) || [];
+        users.push({ name, email, phone, age });
+        localStorage.setItem("users", JSON.stringify(users));
+        alert("Dados salvos com sucesso!");
+        clearForm();
+      }
+
+      function clearForm() {
+        document.getElementById("userForm").reset();
+      }
+
+      window.onload = populateAgeOptions;
+    </script>
+  </body>
+</html>

@@ -1,0 +1,190 @@
+<!-- Página de Usuários: Exibição dos dados cadastrados -->
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lista de Usuários</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        margin: 20px;
+        background: linear-gradient(135deg, #4caf50, #2e7d32);
+        color: white;
+      }
+      .container {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        width: 80%;
+        margin: auto;
+        color: black;
+      }
+      h2 {
+        color: #2e7d32;
+      }
+      .search-container {
+        margin-bottom: 20px;
+      }
+      .search-input {
+        width: 80%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 16px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 12px;
+        text-align: left;
+      }
+      th {
+        background-color: #2e7d32;
+        color: white;
+      }
+      button {
+        border: none;
+        padding: 10px 15px;
+        cursor: pointer;
+        margin-right: 5px;
+        border-radius: 5px;
+        font-size: 14px;
+      }
+      .delete-button {
+        background-color: red;
+        color: white;
+      }
+      .delete-button:hover {
+        background-color: darkred;
+      }
+      .edit-button {
+        background-color: blue;
+        color: white;
+      }
+      .edit-button:hover {
+        background-color: darkblue;
+      }
+      .back-link {
+        display: inline-block;
+        margin-top: 20px;
+        padding: 10px 20px;
+        background-color: #ffffff;
+        color: #2e7d32;
+        text-decoration: none;
+        border-radius: 5px;
+        font-weight: bold;
+      }
+      .back-link:hover {
+        background-color: #f1f1f1;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>Lista de Usuários Cadastrados</h2>
+      <div class="search-container">
+        <input
+          type="text"
+          class="search-input"
+          id="search"
+          placeholder="Pesquisar usuário..."
+          onkeyup="searchUser()"
+        />
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>E-mail</th>
+            <th>Telefone</th>
+            <th>Idade</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody id="userTableBody">
+          <!-- Os dados serão inseridos aqui via JavaScript -->
+        </tbody>
+      </table>
+      <a href="index.html" class="back-link">Voltar</a>
+    </div>
+
+    <script>
+      function loadUsers() {
+        let users = JSON.parse(localStorage.getItem("users")) || [];
+        let tableBody = document.getElementById("userTableBody");
+        tableBody.innerHTML = "";
+
+        if (users.length === 0) {
+          tableBody.innerHTML =
+            "<tr><td colspan='5'>Nenhum cadastro encontrado.</td></tr>";
+          return;
+        }
+
+        users.forEach((user, index) => {
+          let row = `<tr class='user-row'>
+                    <td>${user.name}</td>
+                    <td>${user.email}</td>
+                    <td>${user.phone}</td>
+                    <td>${user.age}</td>
+                    <td>
+                        <button class='edit-button' onclick="editUser(${index})">Editar</button>
+                        <button class='delete-button' onclick="confirmDelete(${index})">Excluir</button>
+                    </td>
+                </tr>`;
+          tableBody.innerHTML += row;
+        });
+      }
+
+      function searchUser() {
+        let input = document.getElementById("search").value.toLowerCase();
+        let rows = document.querySelectorAll(".user-row");
+        rows.forEach((row) => {
+          let name = row.cells[0].textContent.toLowerCase();
+          row.style.display = name.includes(input) ? "" : "none";
+        });
+      }
+
+      function editUser(index) {
+        let users = JSON.parse(localStorage.getItem("users")) || [];
+        let user = users[index];
+        let newName = prompt("Editar Nome:", user.name);
+        let newEmail = prompt("Editar E-mail:", user.email);
+        let newPhone = prompt("Editar Telefone:", user.phone);
+        let newAge = prompt("Editar Idade:", user.age);
+        if (newName && newEmail && newPhone && newAge) {
+          users[index] = {
+            name: newName,
+            email: newEmail,
+            phone: newPhone,
+            age: newAge,
+          };
+          localStorage.setItem("users", JSON.stringify(users));
+          loadUsers();
+        }
+      }
+
+      function confirmDelete(index) {
+        if (confirm("Tem certeza que deseja excluir este usuário?")) {
+          deleteUser(index);
+        }
+      }
+
+      function deleteUser(index) {
+        let users = JSON.parse(localStorage.getItem("users")) || [];
+        users.splice(index, 1);
+        localStorage.setItem("users", JSON.stringify(users));
+        loadUsers();
+      }
+
+      window.addEventListener("load", loadUsers);
+    </script>
+  </body>
+</html>
