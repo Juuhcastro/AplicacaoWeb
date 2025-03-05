@@ -1,0 +1,23 @@
+
+
+# Aplicação Web com LocalStorage
+
+Esta aplicação web permite o cadastro de dados em um formulário e salva as informações no **LocalStorage**. Além disso, os dados cadastrados podem ser exibidos em uma tabela.
+
+##  Funcionalidades
+- Cadastro de dados no formulário
+- Armazenamento no LocalStorage
+- Exibição dos dados em uma tabela
+
+##  Tecnologias utilizadas
+- HTML
+- CSS
+- JavaScript
+- LocalStorage
+- Git/GitHub para versionamento
+
+##  Como executar o projeto
+1. Clone este repositório:
+   ```sh
+   git clone https://github.com/Juuhcastro/aplicacoWeb.git
+
